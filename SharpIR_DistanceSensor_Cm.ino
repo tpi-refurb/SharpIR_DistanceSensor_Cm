@@ -21,22 +21,19 @@ SharpIR sharp(IR_PIN,  MODEL);
 void setup() {
   Serial.begin(9600);
   pinMode (IR_PIN, INPUT);
-  pinMode (LED_PIN, OUTPUT);
   pinMode (BUZZER_PIN, OUTPUT);
+  pinMode (LED_PIN, OUTPUT);
 }
 
 void loop() {
+  if (done == false) {                                      // it only runs the loop once
+    unsigned long consume_time1 = millis();                 // takes the time before the loop on the library begins
 
-  //delay(1000);    // it gives you time to open the serial monitor after you upload the sketch
+    int distance_val = sharp.distance();                    // this returns the distance to the object you're measuring
+    Serial.print("Mean distance: ");                        // returns it to the serial monitor
+    Serial.println(distance_val);
 
-  if (done == false) { // it only runs the loop once
-    unsigned long consume_time1 = millis(); // takes the time before the loop on the library begins
-
-    int dis = sharp.distance(); // this returns the distance to the object you're measuring
-    Serial.print("Mean distance: ");  // returns it to the serial monitor
-    Serial.println(dis);
-
-    notify(dis);
+    notify(distance_val);
 
     unsigned long consume_time2 = millis() - consume_time1; // the following gives you the time taken to get the measurement
     Serial.print("Time taken (ms): ");
@@ -48,7 +45,7 @@ void loop() {
 }
 
 void notify(int distance_value) {
-  if (distance_value < MIN_DISTANCE) { //if the distance value is less than 20, the object is within a few inches
+  if (distance_value <= MIN_DISTANCE) {                     //if the distance value is less than and equal 20, the object is within a few inches
     digitalWrite(LED_PIN, HIGH);
     digitalWrite(BUZZER_PIN, HIGH);
   } else {
